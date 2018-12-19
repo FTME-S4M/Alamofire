@@ -47,7 +47,7 @@ open class MultipartFormData {
     // MARK: - Helper Types
 
     struct EncodingCharacters {
-        static let crlf = "\r\n"
+        static let crlf = "\n"
     }
 
     struct BoundaryGenerator {
@@ -424,7 +424,8 @@ open class MultipartFormData {
         for (key, value) in bodyPart.headers {
             headerText += "\(key):\(value)"
         }
-
+        headerText += EncodingCharacters.crlf
+        
         return headerText.data(using: String.Encoding.utf8, allowLossyConversion: false)!
     }
 
@@ -547,13 +548,15 @@ open class MultipartFormData {
     // MARK: - Private - Content Headers
 
     private func contentHeaders(withName name: String, fileName: String? = nil, mimeType: String? = nil) -> [String: String] {
+        
         var disposition = "form-data;name=\(name)"
-        if let fileName = fileName { disposition += ";filename=\(fileName)" }
-
+        if let fileName = fileName {
+            disposition += ";filename=\(fileName)"
+        }
         var headers = ["Content-Disposition": disposition]
-        if let mimeType = mimeType { headers["Content-Type"] = mimeType }
-
+        if let mimeType = mimeType { headers["Content-Type"] = "multipart/form-data\n\r" }
         return headers
+
     }
 
     // MARK: - Private - Boundary Encoding
