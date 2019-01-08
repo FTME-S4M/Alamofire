@@ -425,7 +425,7 @@ open class MultipartFormData {
             headerText += "\(key):\(value)"
         }
         headerText += EncodingCharacters.crlf
-        
+
         return headerText.data(using: String.Encoding.utf8, allowLossyConversion: false)!
     }
 
@@ -548,10 +548,10 @@ open class MultipartFormData {
     // MARK: - Private - Content Headers
 
     private func contentHeaders(withName name: String, fileName: String? = nil, mimeType: String? = nil) -> [String: String] {
-        
+
         var disposition = "form-data;name=\(name)"
         if let fileName = fileName {
-            disposition += ";filename=\(fileName)"
+            disposition += ";filename=\(fileName)\r\n"
         }
         var headers = ["Content-Disposition": disposition]
         if let mimeType = mimeType { headers["Content-Type"] = "multipart/form-data\n" }
